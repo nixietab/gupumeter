@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GupuMeter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: #20201d;
+            color: #a6a28c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #a6a28c;
+            color: #20201d;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #8d8d72;
+        }
+        input {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #a6a28c;
+            border-radius: 5px;
+            background-color: #20201d;
+            color: #a6a28c;
+            width: calc(100% - 22px);
+        }
+        .rating {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        h1, h2 {
+            color: #a6a28c;
+            margin: 0;
+        }
+        ul {
+            text-align: left;
+            margin: 20px auto;
+            padding: 0;
+            list-style-type: none;
+            max-width: 500px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>GupuMeter</h1>
+        <p>Generate and rate words based on the gupulupu principle:</p>
+                <p id="formula"></p>
+        <ul>
+            <li>Each word must start with a consonant.</li>
+            <li>The word should have at least 2 vowels.</li>
+            <li>The last character of the word must be a vowel.</li>
+        </ul>
+        <h2>Generated Lupu:</h2>
+        <p id="words"></p>
+        <button onclick="generateWords()">Generate New Gupu</button>
+        <br>
+        <br>
+        <h2>Check a Word</h2>
+        <input type="text" id="wordInput" placeholder="Gupu Lupu">
+        <button onclick="checkWord()">Check Gobie</button>
+        <p id="rating" class="rating"></p>
+    </div>
+
+    <script>
+        const consonants = 'bcdfghjklmnpqrstvwxyz';
+        const vowels = 'aeiou';
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function generatePattern(length) {
+            let pattern = [];
+            let vowelCount = 0;
+
+            for (let i = 0; i < length; i++) {
+                if (Math.random() < 0.5 || vowelCount < 2) {
+                    pattern.push(getRandomElement(vowels));
+                    vowelCount++;
+                } else {
+                    pattern.push(getRandomElement(consonants));
+                }
+            }
+
+            if (vowelCount < 2) {
+                pattern[Math.floor(Math.random() * (length - 1))] = getRandomElement(vowels);
+            }
+            pattern[length - 1] = getRandomElement(vowels);
+
+            return pattern.join('');
+        }
+
+        function generateWords() {
+            const minWordLength = 4;
+            const patternLength = Math.max(minWordLength - 1, Math.floor(Math.random() * 3) + 3);
+            const pattern = generatePattern(patternLength);
+
+            const consonant1 = getRandomElement(consonants);
+            const consonant2 = getRandomElement(consonants.split('').filter(c => c !== consonant1));
+
+            const word1 = consonant1 + pattern;
+            const word2 = consonant2 + pattern;
+
+            document.getElementById('words').textContent = `${word1} ${word2}`;
+        }
+
+        function checkWord() {
+            const inputWord = document.getElementById('wordInput').value.toLowerCase();
+            const ratingElement = document.getElementById('rating');
+            let rating = 0;
+
+            const vowelCount = (inputWord.match(/[aeiou]/g) || []).length;
+            const endsWithVowel = /[aeiou]$/.test(inputWord);
+
+            if (vowelCount >= 2 && endsWithVowel) {
+                rating = 10;
+            } else if (vowelCount >= 1 && endsWithVowel) {
+                rating = 5;
+            } else if (vowelCount >= 2) {
+                rating = 3;
+            } else {
+                rating = 1;
+            }
+
+            ratingElement.textContent = `Rating: ${rating}/10`;
+        }
+
+        generateWords();
+    </script>
+
+    <script>
+        document.getElementById('formula').innerHTML = '\\[ \\text{Valid}(W) = \\left( W[0] \\in \\text{Consonants} \\right) \\land \\left( \\text{Vowels}(W) \\geq 2 \\right) \\land \\left( W[n-1] \\in \\text{Vowels} \\right) \\]';
+    </script
+
+
+</body>
+</html>
